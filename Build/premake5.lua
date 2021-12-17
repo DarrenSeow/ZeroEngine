@@ -145,7 +145,9 @@ project "ZeroEditor"
 	{
         -- Internal Source Files
 		sourceFilesPath .. "/Pch",
-		engineFilesPath .. "/Application"
+		
+		engineFilesPath .. "/Application",
+		"%{IncludeDir.Vulkan}"
 	}
     
     -- Prepocessor defines
@@ -165,12 +167,13 @@ project "ZeroEditor"
 	libdirs 
 	{
 		outputdir,
-
+		"$(VULKAN_SDK)/LIB"
 	}
 
 	links
 	{		
 		"ZeroEngine",
+		"vulkan-1.lib",
 	}
     -- Properties under "All" Configuration
 	filter "system:windows"

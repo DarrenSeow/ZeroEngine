@@ -1,14 +1,15 @@
 #pragma once
 
 
-#include "../Windows/ZeroWindow.h"
-
+#include "..\Windows\ZeroWindow.h"
+#include "..\Graphics\GraphicsEngine.h"
 namespace ZeroEngine
 {
 	class ZeroApplication
 	{
 		bool m_running;
-		ZeroWindow m_window;
+		
+		GraphicsEngine m_graphicsEngine;
 	public:
 
 		ZeroApplication();

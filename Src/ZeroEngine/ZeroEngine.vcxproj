@@ -98,13 +98,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application\ZeroApplication.h" />
+    <ClInclude Include="Graphics\GraphicsEngine.h" />
+    <ClInclude Include="Graphics\VulkanSetup\QueueFamilyIndices.h" />
+    <ClInclude Include="Graphics\VulkanSetup\SwapChainSupportDetails.h" />
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkDebug.h" />
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkHelper.h" />
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.h" />
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.h" />
     <ClInclude Include="Pch\framework.h" />
     <ClInclude Include="Pch\pch.h" />
-    <ClInclude Include="Windows\WinApp.h" />
     <ClInclude Include="Windows\ZeroWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\ZeroApplication.cpp" />
+    <ClCompile Include="Graphics\GraphicsEngine.cpp" />
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkDebug.cpp" />
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkHelper.cpp" />
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.cpp" />
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.cpp" />
     <ClCompile Include="Pch\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>

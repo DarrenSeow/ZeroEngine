@@ -7,7 +7,7 @@ namespace ZeroEngine
 {
 	ZeroApplication::ZeroApplication() :
 		m_running{true},
-		m_window{}
+		m_graphicsEngine{}
 	{
 	}
 	void ZeroApplication::OnInit()
@@ -18,7 +18,7 @@ namespace ZeroEngine
 		while (m_running)
 		{
 
-			if (!m_window.ProcessMessage())
+			if (!m_graphicsEngine.WindowProcessMessage())
 			{
 				m_running = false;
 			}

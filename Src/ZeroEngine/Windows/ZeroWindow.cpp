@@ -9,6 +9,7 @@ namespace ZeroEngine
 		m_windowHandle{NULL},
 		m_accelTable{NULL},
 		m_deviceContext{NULL},
+		m_surface{},
 		m_title{"ZeroEngine"},
 		m_windowWidth{1280},
 		m_windowHeight{720},
@@ -131,6 +132,35 @@ namespace ZeroEngine
 	void ZeroWindow::SetIsResized(const bool _isResized)
 	{
 		m_isResized = _isResized;
+	}
+
+	const HWND ZeroWindow::GetWindowHandle()
+	{
+		return m_windowHandle;
+	}
+
+	void ZeroWindow::CreateSurface(const VkInstance& _instance)
+	{
+		auto CreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vkGetInstanceProcAddr(_instance, "vkCreateWin32SurfaceKHR");
+		VkWin32SurfaceCreateInfoKHR createInfo = {};
+		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+		createInfo.hwnd = GetWindowHandle();
+		createInfo.hinstance = GetModuleHandle(nullptr);
+
+		if (!CreateWin32SurfaceKHR || CreateWin32SurfaceKHR(_instance, &createInfo, nullptr, &m_surface))
+		{
+			throw std::runtime_error("failed to create window surface!");
+		}
+	}
+
+	void ZeroWindow::DestroySurface(const VkInstance& _instance)
+	{
+		vkDestroySurfaceKHR(_instance, m_surface, nullptr);
+	}
+
+	const VkSurfaceKHR ZeroWindow::GetSurface()
+	{
+		return m_surface;
 	}
 
 	LRESULT CALLBACK ZeroWindow::OnWinProc(HWND _windowHandle, UINT _message, WPARAM _wParam, LPARAM _lParam)

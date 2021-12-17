@@ -11,8 +11,8 @@ int main()
 		application.OnInit();
 		application.OnUpdate();	
 	}
-	catch (const std::exception& e)
+	catch (const std::exception& )
 	{
-
+		
 	}
 }

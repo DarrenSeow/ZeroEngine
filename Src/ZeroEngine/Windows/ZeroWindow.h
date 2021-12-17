@@ -1,7 +1,9 @@
 #pragma once
 
+#define VK_USE_PLATFORM_WIN32_KHR
 #include <Windows.h>
 #include <string>
+#include <vulkan\vulkan.hpp>
 namespace ZeroEngine
 {
 	class ZeroWindow
@@ -11,6 +13,8 @@ namespace ZeroEngine
 		HACCEL m_accelTable;
 		HDC m_deviceContext;
 		
+		VkSurfaceKHR m_surface;
+
 		std::string m_title;
 
 		unsigned int m_windowWidth;
@@ -31,5 +35,11 @@ namespace ZeroEngine
 		const unsigned int GetWindowHeight();
 		const bool GetIsResized();
 		void SetIsResized(const bool _isResized);
+		const HWND GetWindowHandle();
+		void CreateSurface(const VkInstance& _instance);
+
+		void DestroySurface(const VkInstance& _instance);
+
+		const VkSurfaceKHR GetSurface();
 	};
 }
