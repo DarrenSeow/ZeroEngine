@@ -31,8 +31,8 @@ namespace ZeroEngine
 		ZeroWindow(const ZeroWindow&) = delete;
 		ZeroWindow& operator=(const ZeroWindow&) = delete;
 		bool ProcessMessage();
-		const unsigned int GetWindowWidth();
-		const unsigned int GetWindowHeight();
+		const unsigned int GetWindowWidth() const;
+		const unsigned int GetWindowHeight() const;
 		const bool GetIsResized();
 		void SetIsResized(const bool _isResized);
 		const HWND GetWindowHandle();

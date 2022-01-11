@@ -114,12 +114,12 @@ namespace ZeroEngine
 		return true;
 	}
 
-	const unsigned int ZeroWindow::GetWindowWidth()
+	const unsigned int ZeroWindow::GetWindowWidth() const
 	{
 		return m_windowWidth;
 	}
 
-	const unsigned int ZeroWindow::GetWindowHeight()
+	const unsigned int ZeroWindow::GetWindowHeight() const
 	{
 		return m_windowHeight;
 	}

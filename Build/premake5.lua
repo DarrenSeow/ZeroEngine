@@ -1,7 +1,7 @@
 workspace "ZeroEngine"            -- Solution
     location "ZeroEngine"         -- Create Solution in "PotatoEngine" folder
 	architecture "x64"
-	startproject "ZeroEngine"
+	startproject "ZeroEditor"
 
 	configurations
 	{
@@ -10,13 +10,14 @@ workspace "ZeroEngine"            -- Solution
 	}
 
 -- Type Aliases
-outputdir       = "../Bin/"
+outputdir       = "../Bin/%{prj.name}"
 objOutputDir    = "../Bin-int/"
 sourceFilesPath = "../Src/%{prj.name}"
 engineFilesPath = "../Src/ZeroEngine"
 ------ Include Directories -------------------------------------------
 IncludeDir = {}
 IncludeDir["Vulkan"]          = "$(Vulkan_SDK)/Include"
+IncludeDir["glm"]			  = "../Bin/glm/glm"
 ------ ZeroEngine -------------------------------------------
 project "ZeroEngine"
 	location (sourceFilesPath) 
@@ -56,7 +57,8 @@ project "ZeroEngine"
 	{
         -- Internal Source Files
 		sourceFilesPath .. "/Pch",
-		"%{IncludeDir.Vulkan}"
+		"%{IncludeDir.Vulkan}",
+		"%{IncludeDir.glm}"
 	}
     
     -- Prepocessor defines
@@ -72,7 +74,13 @@ project "ZeroEngine"
 	{
 		"MultiProcessorCompile"
 	}
+	postbuildcommands
+	{
+		"{mkdir} Data",
+		"{copy} ../Data ../../Bin/Data",
 
+		
+	}
     -- Properties under "All" Configuration
 	filter "system:windows"
 		staticruntime "On"
@@ -105,6 +113,7 @@ project "ZeroEngine"
 			"ZE_RELEASE",
 			"NDEBUG"
 		}
+
 
 ------ ZeroEditor -------------------------------------------
 project "ZeroEditor"

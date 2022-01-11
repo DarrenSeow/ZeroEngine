@@ -8,6 +8,8 @@
 #include "VulkanSetup\ZeroVkDebug.h"
 #include "VulkanSetup\ZeroVkPhysicalDevice.h"
 #include "VulkanSetup\ZeroVkLogicalDevice.h"
+#include "VulkanSetup\ZeroVkSwapChain.h"
+
 namespace ZeroEngine
 {
 	class GraphicsEngine
@@ -35,6 +37,7 @@ namespace ZeroEngine
 		ZeroVkDebug m_debug;
 		ZeroVkPhysicalDevice m_physicalDevice;
 		ZeroVkLogicalDevice m_logicalDevice;
+		ZeroVkSwapChain m_frameBuffer;
 
 		static std::vector<char> ReadShaderFile(const std::string& _path);
 
@@ -47,6 +50,7 @@ namespace ZeroEngine
 	public:
 		GraphicsEngine();
 		bool WindowProcessMessage();
+		void DrawFrame();
 		~GraphicsEngine();
 	};
 }

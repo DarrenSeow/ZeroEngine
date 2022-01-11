@@ -22,6 +22,7 @@ namespace ZeroEngine
 			{
 				m_running = false;
 			}
+			m_graphicsEngine.DrawFrame();
 		}
 	}
 }

@@ -7,6 +7,12 @@
     <Filter Include="Graphics">
       <UniqueIdentifier>{1653CE33-0220-293F-2B39-17E717655ECD}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Graphics\VulkanSetup">
+      <UniqueIdentifier>{A77238B3-9301-C27C-3C20-D677288ED222}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Miscs">
+      <UniqueIdentifier>{24E9AB0D-90FD-D3BE-597F-771EC552D0EF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Pch">
       <UniqueIdentifier>{6014880B-CC1D-887C-5599-9E7CC1A1937C}</UniqueIdentifier>
     </Filter>
@@ -21,6 +27,36 @@
     <ClInclude Include="Graphics\GraphicsEngine.h">
       <Filter>Graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Vertex.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\QueueFamilyIndices.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\SwapChainSupportDetails.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkDebug.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkGraphicsPipeLine.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkHelper.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkSwapChain.h">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClInclude>
+    <ClInclude Include="Miscs\Helpers.h">
+      <Filter>Miscs</Filter>
+    </ClInclude>
     <ClInclude Include="Pch\framework.h">
       <Filter>Pch</Filter>
     </ClInclude>
@@ -30,12 +66,6 @@
     <ClInclude Include="Windows\ZeroWindow.h">
       <Filter>Windows</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\VulkanSetup\ZeroVkDebug.h" />
-    <ClInclude Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.h" />
-    <ClInclude Include="Graphics\VulkanSetup\ZeroVkHelper.h" />
-    <ClInclude Include="Graphics\VulkanSetup\QueueFamilyIndices.h" />
-    <ClInclude Include="Graphics\VulkanSetup\SwapChainSupportDetails.h" />
-    <ClInclude Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Application\ZeroApplication.cpp">
@@ -44,15 +74,35 @@
     <ClCompile Include="Graphics\GraphicsEngine.cpp">
       <Filter>Graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Vertex.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkDebug.cpp">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkGraphicsPipeLine.cpp">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkHelper.cpp">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.cpp">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.cpp">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkSwapChain.cpp">
+      <Filter>Graphics\VulkanSetup</Filter>
+    </ClCompile>
+    <ClCompile Include="Miscs\Helpers.cpp">
+      <Filter>Miscs</Filter>
+    </ClCompile>
     <ClCompile Include="Pch\pch.cpp">
       <Filter>Pch</Filter>
     </ClCompile>
     <ClCompile Include="Windows\ZeroWindow.cpp">
       <Filter>Windows</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\VulkanSetup\ZeroVkDebug.cpp" />
-    <ClCompile Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.cpp" />
-    <ClCompile Include="Graphics\VulkanSetup\ZeroVkHelper.cpp" />
-    <ClCompile Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.cpp" />
   </ItemGroup>
 </Project>

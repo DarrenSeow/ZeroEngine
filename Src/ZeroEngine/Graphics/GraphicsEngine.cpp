@@ -123,6 +123,19 @@ namespace ZeroEngine
             m_physicalDevice.GetDeviceExtensions(),
             validationLayers
         );
+
+        m_frameBuffer.CreateSwapChain(
+            m_physicalDevice.GetPhysicalDevice(), 
+            m_logicalDevice.GetDevice(), 
+            m_window.GetSurface(), 
+            m_window); 
+
+        m_frameBuffer.CreateImageViews(m_logicalDevice.GetDevice());
+        m_frameBuffer.CreateRenderPass(m_logicalDevice.GetDevice(), m_physicalDevice.GetPhysicalDevice());
+       
+        m_frameBuffer.CreateGraphicsPipeLine(m_logicalDevice.GetDevice());
+        m_frameBuffer.CreateCommandPool(m_logicalDevice.GetDevice(), m_physicalDevice.GetPhysicalDevice(),m_window.GetSurface());
+        m_frameBuffer.CreateFrameBuffers(m_logicalDevice.GetDevice());
     }
 
     bool GraphicsEngine::WindowProcessMessage()
@@ -130,8 +143,15 @@ namespace ZeroEngine
         return m_window.ProcessMessage();
     }
 
+    void GraphicsEngine::DrawFrame()
+    {
+        m_frameBuffer.DrawFrame(m_logicalDevice.GetDevice());
+    }
+
     GraphicsEngine::~GraphicsEngine()
     {
+        m_frameBuffer.CleanUpSwapChain(m_logicalDevice.GetDevice());
+        m_frameBuffer.DestroyCommandPool(m_logicalDevice.GetDevice());
         m_logicalDevice.DestroyLogicalDevice();
         m_debug.DestroyDebugUtlisMessenger(m_instance,m_enableValidationLayers);
         m_window.DestroySurface(m_instance);

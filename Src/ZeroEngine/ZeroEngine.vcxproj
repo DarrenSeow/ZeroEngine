@@ -41,13 +41,13 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>..\..\Bin\</OutDir>
+    <OutDir>..\..\Bin\ZeroEngine\</OutDir>
     <IntDir>..\..\Bin-int\Debug\ZeroEngine\</IntDir>
     <TargetName>ZeroEngine</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>..\..\Bin\</OutDir>
+    <OutDir>..\..\Bin\ZeroEngine\</OutDir>
     <IntDir>..\..\Bin-int\Release\ZeroEngine\</IntDir>
     <TargetName>ZeroEngine</TargetName>
     <TargetExt>.lib</TargetExt>
@@ -58,7 +58,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;ZE_PLATFORM_WINDOWS;ZE_DEBUG;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Pch;$(Vulkan_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Pch;$(Vulkan_SDK)\Include;..\..\Bin\glm\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <MinimalRebuild>false</MinimalRebuild>
@@ -73,6 +73,10 @@
     <Lib>
       <AdditionalOptions>/NODEFAULTLIB:libcmt.lib %(AdditionalOptions)</AdditionalOptions>
     </Lib>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST Data (mkdir Data)
+IF EXIST ..\Data\ (xcopy /Q /E /Y /I ..\Data ..\..\Bin\Data &gt; nul) ELSE (xcopy /Q /Y /I ..\Data ..\..\Bin\Data &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -80,7 +84,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;ZE_PLATFORM_WINDOWS;ZE_RELEASE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>Pch;$(Vulkan_SDK)\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>Pch;$(Vulkan_SDK)\Include;..\..\Bin\glm\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -95,16 +99,24 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST Data (mkdir Data)
+IF EXIST ..\Data\ (xcopy /Q /E /Y /I ..\Data ..\..\Bin\Data &gt; nul) ELSE (xcopy /Q /Y /I ..\Data ..\..\Bin\Data &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Application\ZeroApplication.h" />
     <ClInclude Include="Graphics\GraphicsEngine.h" />
+    <ClInclude Include="Graphics\Vertex.h" />
     <ClInclude Include="Graphics\VulkanSetup\QueueFamilyIndices.h" />
     <ClInclude Include="Graphics\VulkanSetup\SwapChainSupportDetails.h" />
     <ClInclude Include="Graphics\VulkanSetup\ZeroVkDebug.h" />
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkGraphicsPipeLine.h" />
     <ClInclude Include="Graphics\VulkanSetup\ZeroVkHelper.h" />
     <ClInclude Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.h" />
     <ClInclude Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.h" />
+    <ClInclude Include="Graphics\VulkanSetup\ZeroVkSwapChain.h" />
+    <ClInclude Include="Miscs\Helpers.h" />
     <ClInclude Include="Pch\framework.h" />
     <ClInclude Include="Pch\pch.h" />
     <ClInclude Include="Windows\ZeroWindow.h" />
@@ -112,10 +124,14 @@
   <ItemGroup>
     <ClCompile Include="Application\ZeroApplication.cpp" />
     <ClCompile Include="Graphics\GraphicsEngine.cpp" />
+    <ClCompile Include="Graphics\Vertex.cpp" />
     <ClCompile Include="Graphics\VulkanSetup\ZeroVkDebug.cpp" />
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkGraphicsPipeLine.cpp" />
     <ClCompile Include="Graphics\VulkanSetup\ZeroVkHelper.cpp" />
     <ClCompile Include="Graphics\VulkanSetup\ZeroVkLogicalDevice.cpp" />
     <ClCompile Include="Graphics\VulkanSetup\ZeroVkPhysicalDevice.cpp" />
+    <ClCompile Include="Graphics\VulkanSetup\ZeroVkSwapChain.cpp" />
+    <ClCompile Include="Miscs\Helpers.cpp" />
     <ClCompile Include="Pch\pch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
