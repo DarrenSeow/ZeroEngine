@@ -5,9 +5,12 @@
 
 namespace ZeroEngine
 {
-	ZeroApplication::ZeroApplication() :
+	ZeroApplication::ZeroApplication(const std::string& _applicationName, 
+		const unsigned int _width, 
+		const unsigned int _height) :
 		m_running{true},
-		m_graphicsEngine{}
+		m_window{_applicationName,_width,_height },
+		m_graphicsEngine{m_window}
 	{
 	}
 	void ZeroApplication::OnInit()
@@ -18,12 +21,13 @@ namespace ZeroEngine
 		while (m_running)
 		{
 
-			if (!m_graphicsEngine.WindowProcessMessage())
+			if (!m_window.ProcessMessage())
 			{
 				m_running = false;
 			}
-			m_graphicsEngine.DrawFrame();
+			m_graphicsEngine.DrawFrame(m_window);
 		}
+		//vkDeviceWaitIdle(m_graphicsEngine.GetDevice());
 	}
 }
 

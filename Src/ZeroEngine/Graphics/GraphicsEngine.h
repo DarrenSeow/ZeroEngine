@@ -33,7 +33,8 @@ namespace ZeroEngine
 		};
 
 		VkInstance m_instance;
-		ZeroWindow m_window;
+		VkSurfaceKHR m_surface;
+
 		ZeroVkDebug m_debug;
 		ZeroVkPhysicalDevice m_physicalDevice;
 		ZeroVkLogicalDevice m_logicalDevice;
@@ -42,15 +43,19 @@ namespace ZeroEngine
 		static std::vector<char> ReadShaderFile(const std::string& _path);
 
 		void CreateInstance();
+		void CreateVkSurface(const ZeroWindow& _window);
+		void DestroyVkSurface();
+		
 		bool CheckValidationLayerSupport();
-
+		
 		std::vector<const char*> GetRequiredExtensions();
 
 
 	public:
-		GraphicsEngine();
-		bool WindowProcessMessage();
-		void DrawFrame();
+		VkDevice GetDevice();
+		GraphicsEngine(const ZeroWindow& _window);
+		
+		void DrawFrame(ZeroWindow& _window);
 		~GraphicsEngine();
 	};
 }

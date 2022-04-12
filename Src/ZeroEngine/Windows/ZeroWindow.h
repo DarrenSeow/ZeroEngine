@@ -13,7 +13,6 @@ namespace ZeroEngine
 		HACCEL m_accelTable;
 		HDC m_deviceContext;
 		
-		VkSurfaceKHR m_surface;
 
 		std::string m_title;
 
@@ -26,7 +25,7 @@ namespace ZeroEngine
 
 		static LRESULT CALLBACK OnWinProc(HWND _windowHandle, UINT _message, WPARAM _wParam, LPARAM _lParam);
 	public:
-		ZeroWindow();
+		ZeroWindow(const std::string& _windowName, const unsigned int _width,const unsigned int _height);
 		~ZeroWindow();
 		ZeroWindow(const ZeroWindow&) = delete;
 		ZeroWindow& operator=(const ZeroWindow&) = delete;
@@ -36,10 +35,9 @@ namespace ZeroEngine
 		const bool GetIsResized();
 		void SetIsResized(const bool _isResized);
 		const HWND GetWindowHandle();
-		void CreateSurface(const VkInstance& _instance);
 
-		void DestroySurface(const VkInstance& _instance);
-
-		const VkSurfaceKHR GetSurface();
+		const HINSTANCE GetInstance() const;
+		const HWND GetHWND() const;
+		
 	};
 }

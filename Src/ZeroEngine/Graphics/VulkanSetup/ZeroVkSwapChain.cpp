@@ -193,12 +193,19 @@ namespace ZeroEngine
         }
 
         vkGetSwapchainImagesKHR(_device, m_swapChain, &imageCount, nullptr);
-        m_swapChainImageViews.resize(imageCount);
+        m_swapChainImages.resize(imageCount);
         vkGetSwapchainImagesKHR(_device, m_swapChain, &imageCount, m_swapChainImages.data());
 
         m_swapChainImageFormat = surfaceFormat.format;
         m_swapChainExtent = extent;
 	}
+    void ZeroVkSwapChain::RecreateSwapChain(VkDevice _device)
+    {
+        vkDeviceWaitIdle(_device);
+        CleanUpSwapChain(_device);
+        
+        //CreateSwapChain();
+    }
     void ZeroVkSwapChain::CreateRenderPass(VkDevice _device,VkPhysicalDevice _physicalDevice)
     {
         VkAttachmentDescription colorAttachment = 
@@ -213,7 +220,7 @@ namespace ZeroEngine
                 VK_IMAGE_LAYOUT_PRESENT_SRC_KHR
             );
 
-        VkAttachmentDescription depthAttachment = 
+      /*  VkAttachmentDescription depthAttachment = 
             CreateAttachmentDescription(
                 FindDepthFormat(_physicalDevice),
                 VK_SAMPLE_COUNT_1_BIT,
@@ -223,32 +230,33 @@ namespace ZeroEngine
                 VK_ATTACHMENT_STORE_OP_DONT_CARE,
                 VK_IMAGE_LAYOUT_UNDEFINED,
                 VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL
-                );
+                );*/
 
 
         VkAttachmentReference colorAttachmentRef{};
         colorAttachmentRef.attachment = 0;
         colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 
-        VkAttachmentReference depthAttachmentRef{};
+        /*VkAttachmentReference depthAttachmentRef{};
         depthAttachmentRef.attachment = 1;
         depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-
+        */
         VkSubpassDescription subpass{};
         subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
         subpass.colorAttachmentCount = 1;
         subpass.pColorAttachments = &colorAttachmentRef;
-        subpass.pDepthStencilAttachment = &depthAttachmentRef;
+      //  subpass.pDepthStencilAttachment = nullptr;
+        //subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
         VkSubpassDependency dependency{};
         dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
         dependency.dstSubpass = 0;
-        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT /*| VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT*/;
         dependency.srcAccessMask = 0;
-        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT/* | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT*/;
+        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT /* | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT*/;
 
-        std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+        std::array<VkAttachmentDescription,1> attachments = { colorAttachment, /*depthAttachment*/ };
         VkRenderPassCreateInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
         renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
@@ -318,6 +326,30 @@ namespace ZeroEngine
             }
         }
     }
+    void ZeroVkSwapChain::CreateSyncObjects(VkDevice _device)
+    {
+        m_imageAvailableSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+        m_renderFinishedSemaphores.resize(MAX_FRAMES_IN_FLIGHT);
+        m_inFlightFences.resize(MAX_FRAMES_IN_FLIGHT);
+        m_imagesInFlight.resize(m_swapChainImages.size(), VK_NULL_HANDLE);
+
+        VkSemaphoreCreateInfo semaphoreInfo{};
+        semaphoreInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        VkFenceCreateInfo fenceInfo{};
+        fenceInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+        fenceInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+        
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; ++i)
+        {
+            if (vkCreateSemaphore(_device, &semaphoreInfo, nullptr, &m_imageAvailableSemaphores[i]) != VK_SUCCESS ||
+                vkCreateSemaphore(_device, &semaphoreInfo, nullptr, &m_renderFinishedSemaphores[i]) != VK_SUCCESS ||
+                vkCreateFence(_device, &fenceInfo, nullptr, &m_inFlightFences[i]) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create synchronization objects for a frame!");
+            }
+        }
+    }
     void ZeroVkSwapChain::CreateCommandPool(VkDevice _device, VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface)
     {
         QueueFamilyIndices queueFamilyIndices = FindQueueFamilies(_physicalDevice, _surface);
@@ -363,9 +395,9 @@ namespace ZeroEngine
             renderPassInfo.renderArea.offset = { 0, 0 };
             renderPassInfo.renderArea.extent = m_swapChainExtent;
 
-            std::array<VkClearValue, 2> clearValues{};
-            clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
-            clearValues[1].depthStencil = { 1.0f, 0 };
+            std::array<VkClearValue, 1> clearValues{};
+            clearValues[0].color = { {0.5f, .5f, .5f, 1.0f} };
+            //clearValues[1].depthStencil = { 1.0f, 0 };
 
             renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
             renderPassInfo.pClearValues = clearValues.data();
@@ -398,10 +430,11 @@ namespace ZeroEngine
     {
         vkDestroyCommandPool(_device, m_commandPool, nullptr);
     }
-    void ZeroVkSwapChain::DrawFrame(VkDevice _device)
+
+    void ZeroVkSwapChain::DrawFrame(VkDevice _device,VkQueue _graphicsQueue, VkQueue _presentQueue,bool& _isResized)
     {
         vkWaitForFences(_device, 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
-
+      
         uint32_t imageIndex;
         VkResult result = vkAcquireNextImageKHR(_device, m_swapChain, UINT64_MAX, m_imageAvailableSemaphores[m_currentFrame], VK_NULL_HANDLE, &imageIndex);
 
@@ -421,7 +454,7 @@ namespace ZeroEngine
         {
             vkWaitForFences(_device, 1, &m_imagesInFlight[imageIndex], VK_TRUE, UINT64_MAX);
         }
-        m_imagesInFlight[imageIndex] = m_inFlightFences[m_currentFrame];
+         m_imagesInFlight[imageIndex] = m_inFlightFences[m_currentFrame];
 
         VkSubmitInfo submitInfo{};
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
@@ -441,7 +474,7 @@ namespace ZeroEngine
 
         vkResetFences(_device, 1, &m_inFlightFences[m_currentFrame]);
 
-        if (vkQueueSubmit(m_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]) != VK_SUCCESS)
+        if (vkQueueSubmit(_graphicsQueue, 1, &submitInfo, m_inFlightFences[m_currentFrame]) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit draw command buffer!");
         }
@@ -458,9 +491,9 @@ namespace ZeroEngine
 
         presentInfo.pImageIndices = &imageIndex;
 
-        result = vkQueuePresentKHR(m_presentQueue, &presentInfo);
+        result = vkQueuePresentKHR(_presentQueue, &presentInfo);
 
-        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR/* || framebufferResized*/)
+        if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||_isResized)
         {
             //framebufferResized = false;
            // RecreateSwapChain();
@@ -469,7 +502,6 @@ namespace ZeroEngine
         {
             throw std::runtime_error("failed to present swap chain image!");
         }
-        
         m_currentFrame = (m_currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
 }

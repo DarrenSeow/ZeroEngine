@@ -2,7 +2,7 @@ workspace "ZeroEngine"            -- Solution
     location "ZeroEngine"         -- Create Solution in "PotatoEngine" folder
 	architecture "x64"
 	startproject "ZeroEditor"
-
+	cppdialect "C++20"
 	configurations
 	{
 		"Debug",
@@ -23,7 +23,7 @@ project "ZeroEngine"
 	location (sourceFilesPath) 
 	kind "StaticLib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
     warnings "Extra"
 	staticruntime "on"
     characterset "MBCS"
@@ -120,7 +120,7 @@ project "ZeroEditor"
 	location (sourceFilesPath) 
 	kind "ConsoleApp"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
     warnings "Extra"
 	staticruntime "on"
     characterset "MBCS"

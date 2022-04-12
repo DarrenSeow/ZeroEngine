@@ -4,15 +4,14 @@
 
 namespace ZeroEngine
 {
-	ZeroWindow::ZeroWindow() :
+	ZeroWindow::ZeroWindow(const std::string& _windowName, const unsigned int _width, const unsigned int _height) :
 		m_hInstance{GetModuleHandle(NULL)},
 		m_windowHandle{NULL},
 		m_accelTable{NULL},
 		m_deviceContext{NULL},
-		m_surface{},
-		m_title{"ZeroEngine"},
-		m_windowWidth{1280},
-		m_windowHeight{720},
+		m_title{ _windowName },
+		m_windowWidth{ _width },
+		m_windowHeight{ _height },
 		m_clientWidth{0},
 		m_clientHeight{0},
 		m_isPaused{false},
@@ -68,8 +67,9 @@ namespace ZeroEngine
 
 		if (!m_windowHandle)
 		{
-			MessageBox(NULL, "Failed to create window!", "Error", MB_ICONEXCLAMATION);
-			return;
+			throw std::exception( "Failed to Create Window" );
+			//MessageBox(NULL, "Failed to create window!", "Error", MB_ICONEXCLAMATION);
+			
 		}
 		SetWindowText(m_windowHandle, m_title.c_str());
 		// Update client data of created window
@@ -139,29 +139,16 @@ namespace ZeroEngine
 		return m_windowHandle;
 	}
 
-	void ZeroWindow::CreateSurface(const VkInstance& _instance)
+	const HINSTANCE ZeroWindow::GetInstance() const
 	{
-		auto CreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vkGetInstanceProcAddr(_instance, "vkCreateWin32SurfaceKHR");
-		VkWin32SurfaceCreateInfoKHR createInfo = {};
-		createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-		createInfo.hwnd = GetWindowHandle();
-		createInfo.hinstance = GetModuleHandle(nullptr);
-
-		if (!CreateWin32SurfaceKHR || CreateWin32SurfaceKHR(_instance, &createInfo, nullptr, &m_surface))
-		{
-			throw std::runtime_error("failed to create window surface!");
-		}
+		return m_hInstance;
 	}
 
-	void ZeroWindow::DestroySurface(const VkInstance& _instance)
+	const HWND ZeroWindow::GetHWND() const
 	{
-		vkDestroySurfaceKHR(_instance, m_surface, nullptr);
+		return m_windowHandle;
 	}
 
-	const VkSurfaceKHR ZeroWindow::GetSurface()
-	{
-		return m_surface;
-	}
 
 	LRESULT CALLBACK ZeroWindow::OnWinProc(HWND _windowHandle, UINT _message, WPARAM _wParam, LPARAM _lParam)
 	{

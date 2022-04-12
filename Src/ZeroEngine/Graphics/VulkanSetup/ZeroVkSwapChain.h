@@ -36,7 +36,7 @@ namespace ZeroEngine
 
 		size_t m_currentFrame = 0;
 
-		const int MAX_FRAMES_IN_FLIGHT = 1;
+		const int MAX_FRAMES_IN_FLIGHT = 2;
 		VkSurfaceFormatKHR ChooseSwapSurfaceFormat(
 			const std::vector<VkSurfaceFormatKHR>& _availableFormats);
 		
@@ -69,6 +69,8 @@ namespace ZeroEngine
 			VkImageLayout _initialLayout,
 			VkImageLayout _finalLayout
 		);
+
+
 		
 	public:
 
@@ -79,6 +81,8 @@ namespace ZeroEngine
 			VkDevice _device, 
 			VkSurfaceKHR _surface, 
 			const ZeroWindow& _window);
+
+		void RecreateSwapChain(VkDevice _device);
 		
 		void CreateRenderPass(VkDevice _device,VkPhysicalDevice _physicalDevice);
 
@@ -89,12 +93,13 @@ namespace ZeroEngine
 
 		void CreateFrameBuffers(VkDevice _device);
 
+		void CreateSyncObjects(VkDevice _device);
 		void CreateCommandPool(VkDevice _device, VkPhysicalDevice _physicalDevice, VkSurfaceKHR _surface);
 
 		void CreateCommandBuffers(VkDevice _device);
 		void DestroyCommandPool(VkDevice _device);
 
-
-		void DrawFrame(VkDevice _device);
+		
+		void DrawFrame(VkDevice _device,VkQueue _graphicQueue, VkQueue _presentQueue,bool& _isResized);
 	};
 }

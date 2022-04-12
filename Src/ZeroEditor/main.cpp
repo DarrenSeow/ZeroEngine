@@ -3,11 +3,13 @@
 
 #include <ZeroApplication.h>
 #include <memory>
+
+
 int main()
 {
 	try
 	{
-		ZeroEngine::ZeroApplication application;
+		ZeroEngine::ZeroApplication application{ "Zero Editor",1280,720 };
 		application.OnInit();
 		application.OnUpdate();	
 	}

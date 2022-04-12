@@ -52,6 +52,7 @@ namespace ZeroEngine
 
             m_debug.PopulateDebugMessengerCreateInfo(debugCreateInfo);
             createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT*)&debugCreateInfo;
+            //createInfo.pNext = nullptr;
         }
         else
         {
@@ -64,6 +65,26 @@ namespace ZeroEngine
             throw std::runtime_error("Failed to create Instance");
         }
     }
+
+    void GraphicsEngine::CreateVkSurface(const ZeroWindow& _window)
+    {
+        auto CreateWin32SurfaceKHR = (PFN_vkCreateWin32SurfaceKHR)vkGetInstanceProcAddr(m_instance, "vkCreateWin32SurfaceKHR");
+        VkWin32SurfaceCreateInfoKHR createInfo = {};
+        createInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+        createInfo.hwnd = _window.GetHWND();
+        createInfo.hinstance = _window.GetInstance();
+
+        if (!CreateWin32SurfaceKHR || CreateWin32SurfaceKHR(m_instance, &createInfo, nullptr, &m_surface))
+        {
+            throw std::runtime_error("failed to create window surface!");
+        }
+    }
+
+    void GraphicsEngine::DestroyVkSurface()
+    {
+        vkDestroySurfaceKHR(m_instance, m_surface, nullptr);
+    }
+
 
     bool GraphicsEngine::CheckValidationLayerSupport()
     {
@@ -102,8 +123,13 @@ namespace ZeroEngine
     }
 
 
-    GraphicsEngine::GraphicsEngine() :
-        m_window{},
+    VkDevice GraphicsEngine::GetDevice()
+    {
+        return m_logicalDevice.GetDevice();
+    }
+
+    GraphicsEngine::GraphicsEngine(const ZeroWindow& _window) :
+       
         m_debug{},
         m_physicalDevice{},
         m_logicalDevice{}
@@ -111,14 +137,14 @@ namespace ZeroEngine
         CreateInstance();
 
         m_debug.SetupDebugMessenger(m_instance, m_enableValidationLayers);
+        CreateVkSurface(_window);
+       // m_window.CreateSurface(m_instance);
 
-        m_window.CreateSurface(m_instance);
-
-        m_physicalDevice.PickPhysicalDevice(m_instance, m_window.GetSurface());
+        m_physicalDevice.PickPhysicalDevice(m_instance, m_surface);
 
         m_logicalDevice.CreateLogicalDevice(
             m_physicalDevice.GetPhysicalDevice(),
-            m_window.GetSurface(), 
+            m_surface, 
             m_enableValidationLayers,
             m_physicalDevice.GetDeviceExtensions(),
             validationLayers
@@ -127,25 +153,26 @@ namespace ZeroEngine
         m_frameBuffer.CreateSwapChain(
             m_physicalDevice.GetPhysicalDevice(), 
             m_logicalDevice.GetDevice(), 
-            m_window.GetSurface(), 
-            m_window); 
+            m_surface, 
+            _window);
 
         m_frameBuffer.CreateImageViews(m_logicalDevice.GetDevice());
         m_frameBuffer.CreateRenderPass(m_logicalDevice.GetDevice(), m_physicalDevice.GetPhysicalDevice());
        
         m_frameBuffer.CreateGraphicsPipeLine(m_logicalDevice.GetDevice());
-        m_frameBuffer.CreateCommandPool(m_logicalDevice.GetDevice(), m_physicalDevice.GetPhysicalDevice(),m_window.GetSurface());
+        m_frameBuffer.CreateCommandPool(m_logicalDevice.GetDevice(), m_physicalDevice.GetPhysicalDevice(),m_surface);
         m_frameBuffer.CreateFrameBuffers(m_logicalDevice.GetDevice());
+        m_frameBuffer.CreateCommandBuffers(m_logicalDevice.GetDevice());
+        m_frameBuffer.CreateSyncObjects(m_logicalDevice.GetDevice());
     }
 
-    bool GraphicsEngine::WindowProcessMessage()
-    {
-        return m_window.ProcessMessage();
-    }
 
-    void GraphicsEngine::DrawFrame()
+
+    void GraphicsEngine::DrawFrame(ZeroWindow& _window)
     {
-        m_frameBuffer.DrawFrame(m_logicalDevice.GetDevice());
+        bool isResized = _window.GetIsResized();
+        m_frameBuffer.DrawFrame(m_logicalDevice.GetDevice(),m_logicalDevice.GetGraphicsQueue(), m_logicalDevice.GetPresentQueue(),isResized);
+        _window.SetIsResized(isResized);
     }
 
     GraphicsEngine::~GraphicsEngine()
@@ -154,7 +181,8 @@ namespace ZeroEngine
         m_frameBuffer.DestroyCommandPool(m_logicalDevice.GetDevice());
         m_logicalDevice.DestroyLogicalDevice();
         m_debug.DestroyDebugUtlisMessenger(m_instance,m_enableValidationLayers);
-        m_window.DestroySurface(m_instance);
+        DestroyVkSurface();
+       
         vkDestroyInstance(m_instance,nullptr);
     }
 
